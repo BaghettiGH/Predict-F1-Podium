@@ -9,8 +9,27 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import GridSearchCV,cross_val_score
 
+st.set_page_config(
+    page_title= "Predict F1 Podium",
+    page_icon= "images/f1logo.png",
+    layout='wide',
+    menu_items={
+        'GitHub':
+    }
 
-st.title('Predict F1 Podium')
+
+
+)
+
+
+
+
+
+
+
+
+
+
 #--------Reading Dataset---------
 dfStartingPos = pd.read_csv("assets/f1db-races-starting-grid-positions.csv")
 dfRaceResults = pd.read_csv("assets/f1db-races-race-results.csv")
@@ -50,3 +69,4 @@ df['podiumFinish'] = df['finishPos'].apply(lambda x: 1 if x<=3 else 0)
 
 rearrangeCol = ['driverId','name','totalPodiums','totalPolePositions','raceId','grandPrixId','startingPos','fp1Pos','fp2Pos','fp3Pos','podiumFinish','finishPos']
 df = df[rearrangeCol]
+
