@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import altair as alt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score,mean_absolute_error
@@ -10,16 +11,30 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import GridSearchCV,cross_val_score
 
 st.set_page_config(
-    page_title= "Predict F1 Podium",
+    page_title= "F1 Podium Prediction",
     page_icon= "images/f1logo.png",
-    layout='wide',
-    menu_items={
-        'GitHub':
-    }
-
-
-
+    layout='wide'
 )
+alt.themes.enable('dark')
+
+with st.sidebar:
+    st.image('images/f1logo.png',use_column_width='auto')
+    st.title('F1 Podium Prediction')
+    st.markdown("""
+                This is a streamlit application that predicts if a driver will finish on the top 3 by using their Starting positions and their Finishing positions in Free Practice 1,2, and 3.
+                """)
+
+
+    if 'page_selection' not in st.session_state:
+        st.session_state.page_selection = 'prediction'
+    def set_page_selection(page):
+        st.session_state.page_selection = page
+
+    if st.button("Prediction", use_container_width=True, on_click=set_page_selection, args=('prediction',)):
+        st.session_state.page_selection = 'prediction'
+    
+    if st.button("Dataset and Model", use_container_width=True, on_click=set_page_selection, args=('dataset',)):
+        st.session_state.page_selection = 'dataset'
 
 
 
@@ -69,4 +84,60 @@ df['podiumFinish'] = df['finishPos'].apply(lambda x: 1 if x<=3 else 0)
 
 rearrangeCol = ['driverId','name','totalPodiums','totalPolePositions','raceId','grandPrixId','startingPos','fp1Pos','fp2Pos','fp3Pos','podiumFinish','finishPos']
 df = df[rearrangeCol]
+
+#---Machine Learning-----
+
+dfDt = df
+features = ['startingPos','fp1Pos','fp2Pos','fp3Pos','totalPodiums','totalPolePositions']
+XDt = dfDt[features]
+yDt = dfDt['podiumFinish']
+X_train, X_test, y_train, y_test = train_test_split(XDt,yDt,test_size=0.2,random_state=1)
+decTreeFinal = DecisionTreeClassifier(max_leaf_nodes=22, random_state=1)
+decTreeFinal.fit(X_train,y_train)
+
+def predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos):
+    prediction = decTreeFinal(predict)
+    return prediction
+
+
+
+if st.session_state.page_selection == 'prediction':
+    st.header('🏎️ F1 Podium Prediction ‍💨',)
+    col = st.columns((3.5,4.5),gap ='medium')
+    driver_images = {
+        "albon": "images/albon.png",
+        "alonso": "images/alonso.png",
+        "bearman": "images/bearman.png",
+        "gasly": "images/gasly.png",
+        "hamilton": "images/hamilton.png",
+        "hulkenberg": "images/hulkenberg.png",
+        "kevin_magnussen": "images/kevin_magnussen.png",
+        "lawson": "images/lawson.png",
+        "leclerc": "images/leclerc.png",
+        "max_verstappen": "images/max_verstappen.png",
+        "norris": "images/norris.png",
+        "ocon": "images/ocon.png",
+        "perez": "images/perez.png",
+        "piastri": "images/piastri.png",
+        "russel": "images/russel.png",
+        "sainz": "images/sainz.png",
+        "stroll": "images/stroll.png",
+        "tsunoda": "images/tsunoda.png",
+    }
+
+    with col[0]:
+        driverName = st.text_input('Driver Name').lower()
+        fp1Pos = st.number_input('Free Practice 1 Position', min_value = 1,max_value = 24, step=1)
+        fp2Pos = st.number_input('Free Practice 2 Position', min_value = 1,max_value = 24, step=1)
+        fp3Pos = st.number_input('Free Practice 3 Position', min_value = 1,max_value = 24, step=1)
+        startPos = st.number_input('Starting Position', min_value = 1,max_value = 24, step=1)
+
+        if st.button('Predict Result'):
+            predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos)
+    with col[1]:
+        st.write('dirver')
+
+elif st.session_state.page_selection == 'dataset':
+    st.header('Dataset and Model')
+
 
