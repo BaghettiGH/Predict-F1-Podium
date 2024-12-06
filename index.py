@@ -95,15 +95,27 @@ X_train, X_test, y_train, y_test = train_test_split(XDt,yDt,test_size=0.2,random
 decTreeFinal = DecisionTreeClassifier(max_leaf_nodes=22, random_state=1)
 decTreeFinal.fit(X_train,y_train)
 
-def predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos):
-    prediction = decTreeFinal(predict)
-    return prediction
+
+def predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverFName,driverLName):
+    driverName = driverFName +"-"+ driverLName
+    if driverName in dfDt['driverId']:
+        totalPod = dfDt.loc[dfDt['driverId']== driverName,'totalPodiums'].iloc[0]
+        totalPole = dfDt.loc[dfDt['driverId']==driverName,'totalPolePositions'].iloc[0]
+    else:
+        st.warning(f"Driver Name is invalid")
+
+    inputData = pd.DataFrame({
+            'startingPos':[startPos],
+            'fp1Pos':[fp1Pos],
+            'fp2Pos':[fp2Pos],
+            'fp3Pos':[fp3Pos],
+            'totalPodiums': [totalPod],
+            'totalPolePositions':[totalPole]
+            })
+    predict = decTreeFinal.predict(inputData)
 
 
-
-if st.session_state.page_selection == 'prediction':
-    st.header('🏎️ F1 Podium Prediction ‍💨',)
-    col = st.columns((3.5,4.5),gap ='medium')
+def getDriverImg(driver):
     driver_images = {
         "albon": "images/albon.png",
         "alonso": "images/alonso.png",
@@ -124,18 +136,28 @@ if st.session_state.page_selection == 'prediction':
         "stroll": "images/stroll.png",
         "tsunoda": "images/tsunoda.png",
     }
+    
 
+    
+
+
+
+if st.session_state.page_selection == 'prediction':
+    st.header('🏎️ F1 Podium Prediction ‍💨',)
+    col = st.columns((3.5,4.5),gap ='medium')
+    
     with col[0]:
-        driverName = st.text_input('Driver Name').lower()
+        driverFName = st.text_input('Driver Name (First Name)').lower()
+        driverLName = st.text_input('Driver Name (Last Name)').lower()
         fp1Pos = st.number_input('Free Practice 1 Position', min_value = 1,max_value = 24, step=1)
         fp2Pos = st.number_input('Free Practice 2 Position', min_value = 1,max_value = 24, step=1)
         fp3Pos = st.number_input('Free Practice 3 Position', min_value = 1,max_value = 24, step=1)
         startPos = st.number_input('Starting Position', min_value = 1,max_value = 24, step=1)
 
         if st.button('Predict Result'):
-            predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos)
+            predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverFName,driverLName)
     with col[1]:
-        st.write('dirver')
+        st.image(image=driver_images,width=400)
 
 elif st.session_state.page_selection == 'dataset':
     st.header('Dataset and Model')
