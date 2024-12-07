@@ -96,14 +96,10 @@ decTreeFinal = DecisionTreeClassifier(max_leaf_nodes=22, random_state=1)
 decTreeFinal.fit(X_train,y_train)
 
 
-def predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverFName,driverLName):
-    driverName = driverFName +"-"+ driverLName
-    if driverName in dfDt['driverId']:
-        totalPod = dfDt.loc[dfDt['driverId']== driverName,'totalPodiums'].iloc[0]
-        totalPole = dfDt.loc[dfDt['driverId']==driverName,'totalPolePositions'].iloc[0]
-    else:
-        st.warning(f"Driver Name is invalid")
-
+def predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverName):
+    print(driverName)
+    totalPod = dfDt.loc[dfDt['driverId']== driverName,'totalPodiums'].iloc[0]
+    totalPole = dfDt.loc[dfDt['driverId']==driverName,'totalPolePositions'].iloc[0]
     inputData = pd.DataFrame({
             'startingPos':[startPos],
             'fp1Pos':[fp1Pos],
@@ -115,49 +111,75 @@ def predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverFName,driverLName):
     predict = decTreeFinal.predict(inputData)
 
 
-def getDriverImg(driver):
-    driver_images = {
-        "albon": "images/albon.png",
-        "alonso": "images/alonso.png",
-        "bearman": "images/bearman.png",
-        "gasly": "images/gasly.png",
-        "hamilton": "images/hamilton.png",
-        "hulkenberg": "images/hulkenberg.png",
-        "kevin_magnussen": "images/kevin_magnussen.png",
-        "lawson": "images/lawson.png",
-        "leclerc": "images/leclerc.png",
-        "max_verstappen": "images/max_verstappen.png",
-        "norris": "images/norris.png",
-        "ocon": "images/ocon.png",
-        "perez": "images/perez.png",
-        "piastri": "images/piastri.png",
-        "russel": "images/russel.png",
-        "sainz": "images/sainz.png",
-        "stroll": "images/stroll.png",
-        "tsunoda": "images/tsunoda.png",
+def setDriverImg(driver):
+    driverImg = {
+    "alexander-albon": "images/albon.png",
+    "fernando-alonso": "images/alonso.png",
+    "valterri-bottas": "images/bottas.png",
+    "pierre-gasly": "images/gasly.png",
+    "lewis-hamilton": "images/hamilton.png",
+    "nico-hulkenberg": "images/hulkenberg.png",
+    "kevin-magnussen": "images/kevin_magnussen.png",
+    "liam-lawson": "images/lawson.png",
+    "charles-leclerc": "images/leclerc.png",
+    "max-verstappen": "images/max_verstappen.png",
+    "lando-norris": "images/norris.png",
+    "esteban-ocon": "images/ocon.png",
+    "sergio-perez": "images/perez.png",
+    "oscar-piastri": "images/piastri.png",
+    "george-russell": "images/russel.png",
+    "carlos-sainz-jr": "images/sainz.png",
+    "lance-stroll": "images/stroll.png",
+    "yuki-tsunoda": "images/tsunoda.png",
+    "guanyu-zhou": "images/zhou.png"
     }
-    
+
+    st.image(driverImg[driver],width=400)
 
     
 
 
 
 if st.session_state.page_selection == 'prediction':
-    st.header('🏎️ F1 Podium Prediction ‍💨',)
+    st.header('🏎️ F1 Prediction 2024 ‍💨',)
     col = st.columns((3.5,4.5),gap ='medium')
     
     with col[0]:
-        driver2024 = ()
-        driverName = st.selectbox("Select Driver",)
-        fp1Pos = st.number_input('Free Practice 1 Position', min_value = 1,max_value = 24, step=1)
-        fp2Pos = st.number_input('Free Practice 2 Position', min_value = 1,max_value = 24, step=1)
-        fp3Pos = st.number_input('Free Practice 3 Position', min_value = 1,max_value = 24, step=1)
-        startPos = st.number_input('Starting Position', min_value = 1,max_value = 24, step=1)
+        driver2024 = {
+            'Alexander Albon': 'alexander-albon',
+            'Fernando Alonso':'fernando-alonso',
+            'Valterri Bottas':'valterri-bottas',
+            'Pierre Gasly': 'pierre-gasly',
+            'Lewis Hamilton':'lewis-hamilton',
+            'Nico Hulkenberg': 'nico-hulkenberg',
+            'Kevin Magnussen': 'kevin-magnussen',
+            'Liam Lawson': 'liam-lawson',
+            'Charles Leclerc':'charles-leclerc',
+            'Max Verstappen': 'max-verstappen',
+            'Lando Norris':'lando-norris',
+            'Esteban Ocon':'esteban-ocon',
+            'Sergio Perez':'sergio-perez',
+            'Oscar Piastri':'oscar-piastri',
+            'George Russell':'george-russell',
+            'Carlos Sainz': 'carlos-sainz-jr',
+            'Lance Stroll':'lance-stroll',
+            'Yuki Tsunoda':'yuki-tsunoda',
+            'Zhou Guanyu':'guanyu-zhou'         
+        }
+
+        driverId = st.selectbox("Select Driver",driver2024.keys())
+        driverName = driver2024[driverId]
+        fp1Pos = st.number_input('Free Practice 1 Position', min_value = 1,max_value = 20, step=1)
+        fp2Pos = st.number_input('Free Practice 2 Position', min_value = 1,max_value = 20, step=1)
+        fp3Pos = st.number_input('Free Practice 3 Position', min_value = 1,max_value = 20, step=1)
+        startPos = st.number_input('Starting Position', min_value = 1,max_value = 20, step=1)
 
         if st.button('Predict Result'):
-            predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverFName,driverLName)
+            predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverId)
     with col[1]:
-        st.image(image=driver_images,width=400)
+        setDriverImg(driver2024[driverId])
+        st.markdown(f""" **{driverName}** """)
+        
 
 elif st.session_state.page_selection == 'dataset':
     st.header('Dataset and Model')
