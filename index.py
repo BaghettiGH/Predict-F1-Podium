@@ -147,8 +147,8 @@ if st.session_state.page_selection == 'prediction':
     col = st.columns((3.5,4.5),gap ='medium')
     
     with col[0]:
-        driverFName = st.text_input('Driver Name (First Name)').lower()
-        driverLName = st.text_input('Driver Name (Last Name)').lower()
+        driver2024 = ()
+        driverName = st.selectbox("Select Driver",)
         fp1Pos = st.number_input('Free Practice 1 Position', min_value = 1,max_value = 24, step=1)
         fp2Pos = st.number_input('Free Practice 2 Position', min_value = 1,max_value = 24, step=1)
         fp3Pos = st.number_input('Free Practice 3 Position', min_value = 1,max_value = 24, step=1)
