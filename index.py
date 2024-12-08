@@ -21,7 +21,12 @@ with st.sidebar:
     st.image('images/f1logo.png',use_column_width='auto')
     st.title('F1 Podium Prediction')
     st.markdown("""
-                This is a streamlit application that predicts if a driver will finish on the top 3 by using their Starting positions and their Finishing positions in Free Practice 1,2, and 3.
+                This is a streamlit application that predicts if a driver will finish on the top 3 by using their: 
+
+                - Starting positions 
+                - Finishing positions in Free Practice 1,2,3.
+                - Driver's total podiums
+                - Driver's total pole positions
                 """)
 
 
@@ -96,10 +101,10 @@ decTreeFinal = DecisionTreeClassifier(max_leaf_nodes=22, random_state=1)
 decTreeFinal.fit(X_train,y_train)
 
 
-def predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverName):
-    print(driverName)
-    totalPod = dfDt.loc[dfDt['driverId']== driverName,'totalPodiums'].iloc[0]
-    totalPole = dfDt.loc[dfDt['driverId']==driverName,'totalPolePositions'].iloc[0]
+def predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverId):
+
+    totalPod = dfDt.loc[dfDt['driverId']== driverId,'totalPodiums'].iloc[0]
+    totalPole = dfDt.loc[dfDt['driverId']==driverId,'totalPolePositions'].iloc[0]
     inputData = pd.DataFrame({
             'startingPos':[startPos],
             'fp1Pos':[fp1Pos],
@@ -109,12 +114,17 @@ def predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverName):
             'totalPolePositions':[totalPole]
             })
     predict = decTreeFinal.predict(inputData)
+    if predict[0]==1:
+        st.write(f" **{driverName}** has a high chance of finishing on the podium!")
+    else:
+        st.write(f" **{driverName}** has a low chance of finishing on the podium.")
 
 
 def setDriverImg(driver):
     driverImg = {
     "alexander-albon": "images/albon.png",
     "fernando-alonso": "images/alonso.png",
+    'jack-doohan': 'images/doohan.png',
     "valterri-bottas": "images/bottas.png",
     "pierre-gasly": "images/gasly.png",
     "lewis-hamilton": "images/hamilton.png",
@@ -143,12 +153,13 @@ def setDriverImg(driver):
 if st.session_state.page_selection == 'prediction':
     st.header('🏎️ F1 Prediction 2024 ‍💨',)
     col = st.columns((3.5,4.5),gap ='medium')
-    
+    col1= st.columns((3.5,4.5),gap = 'medium')    
     with col[0]:
         driver2024 = {
             'Alexander Albon': 'alexander-albon',
             'Fernando Alonso':'fernando-alonso',
             'Valterri Bottas':'valterri-bottas',
+            'Jack Doohan' : 'jack-doohan',
             'Pierre Gasly': 'pierre-gasly',
             'Lewis Hamilton':'lewis-hamilton',
             'Nico Hulkenberg': 'nico-hulkenberg',
@@ -165,23 +176,31 @@ if st.session_state.page_selection == 'prediction':
             'Lance Stroll':'lance-stroll',
             'Yuki Tsunoda':'yuki-tsunoda',
             'Zhou Guanyu':'guanyu-zhou'         
-        }
+        }   
 
-        driverId = st.selectbox("Select Driver",driver2024.keys())
-        driverName = driver2024[driverId]
+
+        driverName = st.selectbox("Select Driver",driver2024.keys())
+        driverId = driver2024[driverName]
         fp1Pos = st.number_input('Free Practice 1 Position', min_value = 1,max_value = 20, step=1)
         fp2Pos = st.number_input('Free Practice 2 Position', min_value = 1,max_value = 20, step=1)
         fp3Pos = st.number_input('Free Practice 3 Position', min_value = 1,max_value = 20, step=1)
         startPos = st.number_input('Starting Position', min_value = 1,max_value = 20, step=1)
+    
+        
 
+    with col[1]:
+        setDriverImg(driverId)
+    with col1[0]:
         if st.button('Predict Result'):
             predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverId)
-    with col[1]:
-        setDriverImg(driver2024[driverId])
-        st.markdown(f""" **{driverName}** """)
+    with col1[1]:
+
+        
         
 
 elif st.session_state.page_selection == 'dataset':
     st.header('Dataset and Model')
+
+    st.dataframe(df)
 
 
