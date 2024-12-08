@@ -123,7 +123,6 @@ def setDriverImg(driver):
     "fernando-alonso": "images/alonso.png",
     "valterri-bottas": "images/bottas.png",
     "franco-colapinto": "images/colapinto.png",
-    'jack-doohan': 'images/doohan.png',
     "pierre-gasly": "images/gasly.png",
     "lewis-hamilton": "images/hamilton.png",
     "nico-hulkenberg": "images/hulkenberg.png",
