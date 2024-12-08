@@ -132,7 +132,6 @@ def setDriverImg(driver):
     "charles-leclerc": "images/leclerc.png",
     "max-verstappen": "images/max_verstappen.png",
     "lando-norris": "images/norris.png",
-    "esteban-ocon": "images/ocon.png",
     "sergio-perez": "images/perez.png",
     "oscar-piastri": "images/piastri.png",
     "george-russell": "images/russel.png",
@@ -145,7 +144,7 @@ def setDriverImg(driver):
     st.image(driverImg[driver],width=400)
 
     
-
+prediction = None
 
 
 if st.session_state.page_selection == 'prediction':
@@ -158,7 +157,6 @@ if st.session_state.page_selection == 'prediction':
             'Fernando Alonso':'fernando-alonso',
             'Valterri Bottas':'valterri-bottas',
             'Franco Colapinto': 'franco-colapinto',
-            'Jack Doohan' : 'jack-doohan',
             'Pierre Gasly': 'pierre-gasly',
             'Lewis Hamilton':'lewis-hamilton',
             'Nico Hulkenberg': 'nico-hulkenberg',
@@ -167,7 +165,6 @@ if st.session_state.page_selection == 'prediction':
             'Charles Leclerc':'charles-leclerc',
             'Max Verstappen': 'max-verstappen',
             'Lando Norris':'lando-norris',
-            'Esteban Ocon':'esteban-ocon',
             'Sergio Perez':'sergio-perez',
             'Oscar Piastri':'oscar-piastri',
             'George Russell':'george-russell',
@@ -186,17 +183,16 @@ if st.session_state.page_selection == 'prediction':
         startPos = st.number_input('Starting Position', min_value = 1,max_value = 20, step=1)
     
         
+        if st.button('Predict Result'):
+            prediction = predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverId)
 
     with col[1]:
         setDriverImg(driverId)
-    with col1[0]:
-        if st.button('Predict Result'):
-            prediction = predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverId)
-    with col1[1]:
-        if prediction[0]==1:
-            st.write(f" **{driverName}** has a high chance of finishing on the podium!")
-        else:
-            st.write(f" **{driverName}** has a low chance of finishing on the podium.")
+        if prediction is not None:
+            if prediction[0]==1:
+                st.write(f" **{driverName}** has a high chance of finishing on the podium!")
+            else:
+                st.write(f" **{driverName}** has a low chance of finishing on the podium.")
         
         
         
