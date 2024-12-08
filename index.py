@@ -198,6 +198,29 @@ if st.session_state.page_selection == 'prediction':
 
 elif st.session_state.page_selection == 'dataset':
     st.header('Dataset and Model')
+    st.subheader('Dataset')
     st.dataframe(df)
+    st.markdown("""
+                Special thanks to F1DB for the comprehensive F1 Database! Checkout [F1DB](https://github.com/f1db/f1db) for the full database
+
+                """)
+    
+    st.subheader('Machine Learning Model')
+    st.markdown("""
+
+                This streamlit application uses **Decision Tree Classifier** as the machine learning model to predict if the driver will finish on the podium.
+
+                Features used for training are:
+
+                - Free Practice 1 Position
+                - Free Practice 2 Position
+                - Free Practice 3 Position
+                - Starting Position
+                - Driver's Total Podium Count
+                - Driver's Total Pole Position Count
+
+                The model has an accuracy of **91%**.
+                
+                """)
 
 
