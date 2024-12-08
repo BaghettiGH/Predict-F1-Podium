@@ -1,14 +1,9 @@
 import streamlit as st
-import numpy as np
 import pandas as pd
-import seaborn as sns
 import altair as alt
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score,mean_absolute_error
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.model_selection import GridSearchCV,cross_val_score
+
 
 st.set_page_config(
     page_title= "F1 Podium Prediction",
