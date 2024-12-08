@@ -114,18 +114,16 @@ def predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverId):
             'totalPolePositions':[totalPole]
             })
     predict = decTreeFinal.predict(inputData)
-    if predict[0]==1:
-        st.write(f" **{driverName}** has a high chance of finishing on the podium!")
-    else:
-        st.write(f" **{driverName}** has a low chance of finishing on the podium.")
+    return predict
 
 
 def setDriverImg(driver):
     driverImg = {
     "alexander-albon": "images/albon.png",
     "fernando-alonso": "images/alonso.png",
-    'jack-doohan': 'images/doohan.png',
     "valterri-bottas": "images/bottas.png",
+    "franco-colapinto": "images/colapinto.png",
+    'jack-doohan': 'images/doohan.png',
     "pierre-gasly": "images/gasly.png",
     "lewis-hamilton": "images/hamilton.png",
     "nico-hulkenberg": "images/hulkenberg.png",
@@ -159,6 +157,7 @@ if st.session_state.page_selection == 'prediction':
             'Alexander Albon': 'alexander-albon',
             'Fernando Alonso':'fernando-alonso',
             'Valterri Bottas':'valterri-bottas',
+            'Franco Colapinto': 'franco-colapinto',
             'Jack Doohan' : 'jack-doohan',
             'Pierre Gasly': 'pierre-gasly',
             'Lewis Hamilton':'lewis-hamilton',
@@ -192,15 +191,18 @@ if st.session_state.page_selection == 'prediction':
         setDriverImg(driverId)
     with col1[0]:
         if st.button('Predict Result'):
-            predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverId)
+            prediction = predictInstance(fp1Pos,fp2Pos,fp3Pos,startPos,driverId)
     with col1[1]:
-
+        if prediction[0]==1:
+            st.write(f" **{driverName}** has a high chance of finishing on the podium!")
+        else:
+            st.write(f" **{driverName}** has a low chance of finishing on the podium.")
+        
         
         
 
 elif st.session_state.page_selection == 'dataset':
     st.header('Dataset and Model')
-
     st.dataframe(df)
 
 
